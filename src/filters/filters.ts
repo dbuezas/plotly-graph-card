@@ -350,6 +350,30 @@ const filters = {
       }
       return data;
     },
+    resample_int:
+    (intervalStr: TimeDurationStr = "5m") =>
+    ({ xs, ys, states, statistics }) => {
+      const data = {
+        xs: [] as Date[],
+        ys: [] as YValue[],
+        states: [] as HassEntity[],
+        statistics: [] as StatisticValue[],
+      };
+      const interval = parseTimeDuration(intervalStr);
+      const x0 = Math.floor(+xs[0] / interval) * interval;
+      const x1 = +xs[xs.length - 1];
+      let i = 0;
+      for (let x = x0; x < x1; x += interval) {
+        while (+xs[i + 1] < x && i < xs.length - 1) {
+          i++;
+        }
+        data.xs.push(new Date(x));
+        data.ys.push( ys[i] + (ys[i+1]-ys[i])/(xs[i+1]-xs[i])*(x-xs[i]) ); //linear interpolation between xs[i] and xs[i+1] at time x
+        if (states[i]) data.states.push(states[i]);
+        if (statistics[i]) data.statistics.push(statistics[i]);
+      }
+      return data;
+    },
   load_var:
     (var_name: string) =>
     ({ vars }) =>
