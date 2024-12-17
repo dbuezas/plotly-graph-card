@@ -815,8 +815,9 @@ Remember you can add a `console.log(the_object_you_want_to_inspect)` and see its
 - You can get other values from the yaml with the `getFromConfig` parameter, but if they are functions they need to be defined before.
 - Any function which uses the result of a filter, needs to be placed in the YAML below the filter. For instance, `name: $ex ys.at(-1)` where the filter is modifying `ys`.
 - The same is true of consecutive filters - order matters. This is due to the fact that filters are translated internally to function calls, executed in the order they are parsed.
+- Entity filters *replace* default filters, they are not additive. If you add a single filter to an entity, all the filters that were previously defaults, need declaring explicitly to that entity. See [#505] (https://github.com/dbuezas/lovelace-plotly-graph-card/discussions/505)
 
-#### Adding the last value to the entitiy's name
+#### Adding the last value to the entity's name
 
 ```yaml
 type: custom:plotly-graph
